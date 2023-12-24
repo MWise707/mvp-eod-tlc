@@ -1,7 +1,8 @@
 body {
   padding: 2em;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column;
+  justify-content: center;
 }
 
 .hidden {
@@ -16,15 +17,52 @@ div {
 #platoons {
   display: flex;
   flex-flow: row wrap;
+  justify-content: center;
+}
+
+.all-platoons {
+  display: flex;
+  flex-direction: column;
+  margin: 2em;
+}
+
+.platoon-title {
+  display: flex;
+  justify-content: center;
+}
+
+.tech-details {
+  display: flex;
+  flex-flow: nowrap row;
+  justify-content: space-between;
+  width: 30vh;
+}
+
+.tlc-container {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.tlc-container img {
+  height: 3em;
+  width: auto;
 }
 
 .tech-container {
   display: flex;
   flex-flow: nowrap row;
+  justify-content: space-between;
   width: 30vh;
 }
 
 .badge-container {
-  height: 50px;
-  margin-left: auto;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.badge-container img {
+  height: 3em;
+  width: auto;
 }
