@@ -1,0 +1,30 @@
+body {
+  padding: 2em;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.hidden {
+  display: none;
+}
+
+div {
+  border: solid;
+  border-width: 1px;
+}
+
+#platoons {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.tech-container {
+  display: flex;
+  flex-flow: nowrap row;
+  width: 30vh;
+}
+
+.badge-container {
+  height: 50px;
+  margin-left: auto;
+}
