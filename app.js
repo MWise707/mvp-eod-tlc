@@ -35,6 +35,52 @@ app.get("/techs/:id", (req, res, next) => {
     });
 });
 
+//TODO
+app.post("/techs", (req, res, next) => {
+  const {
+    rank,
+    first_name,
+    last_name,
+    position,
+    is_tlc_complete,
+    percent_complete,
+    platoon_id,
+    team_id,
+    is_officer,
+    badge_level,
+  } = req.body;
+  if (!rank || !first_name || !last_name) {
+    res
+      .status(400)
+      .set("Content-type", "text/plain")
+      .send("Bad request: Missing rank, first name, or last name");
+  } else {
+    db.query(
+      "INSERT INTO techs (tech_id, rank, first_name, last_name, position, is_tlc_complete, percent_complete, platoon_id, team_id, is_officer, badge_level) VALUES (default, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+      [
+        rank,
+        first_name,
+        last_name,
+        position,
+        is_tlc_complete,
+        percent_complete,
+        platoon_id,
+        team_id,
+        is_officer,
+        badge_level,
+      ]
+    )
+      .then((newTech) => {
+        console.log("Added new Tech: ", rank, last_name);
+        res.send([rank, last_name]);
+      })
+      .catch((err) => {
+        console.error("Error add new Tech: ", err.stack);
+        next(err);
+      });
+  }
+});
+
 app.get("/*", (req, res, next) => {
   res.status(500).send("Bad Request- Not formatted correctly");
 });

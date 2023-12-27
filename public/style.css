@@ -3,6 +3,7 @@ body {
   display: flex;
   flex-flow: column;
   justify-content: center;
+  background-color: peru;
 }
 
 .hidden {
@@ -12,18 +13,23 @@ body {
 div {
   border: solid;
   border-width: 1px;
+  border-radius: 25px;
 }
 
 #platoons {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  background-color: crimson;
 }
 
 .all-platoons {
   display: flex;
   flex-direction: column;
   margin: 2em;
+  background-color: navy;
+  font-family: Rubik Lines;
+  color: azure;
 }
 
 .platoon-title {

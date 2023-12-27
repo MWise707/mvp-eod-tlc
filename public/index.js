@@ -1,14 +1,21 @@
 $(document).ready(() => {
   console.log("JS is loaded.");
 
+  // Call bootsrap dropdown
+  $(".dropdown-toggle").dropdown();
+
   // ====== Declare Elements
   const body = $("body");
   const dashboard = $("#dashboard"); // Container for all results
   const platoons = $("#platoons");
+  const addTechBtn = $("#add-tech");
+  const newTechForm = $("#new-tech-form").addClass("hidden");
 
-  $.get("/techs", (data) => {
-    console.log("All Techs Data", data);
-  });
+  function showAllTechs() {
+    $.get("/techs", (data) => {
+      console.log("All Techs Data", data);
+    });
+  }
 
   function showPlatoon(platoon_id) {
     let platoonCont = $(`<div id="platoon-${platoon_id}"></div>`)
@@ -49,6 +56,13 @@ $(document).ready(() => {
 
   showPlatoon("1");
 
+  function addTech(techObj) {
+    const { platoon_id } = techObj;
+    $.post("/techs", techObj).done((platoon_id) => {
+      showPlatoon(platoon_id);
+    });
+  }
+
   function getPlatoonTitle(platoon_id) {
     if (platoon_id === "1") return "1st Platoon";
     if (platoon_id === "2") return "2nd Platoon";
@@ -69,7 +83,6 @@ $(document).ready(() => {
     if (badge_level === "BASIC") return "/media/basic-eod.png";
   }
 
-  // TODO
   function showTLC(tech) {
     if (tech.is_tlc_complete) {
       let checkMark = $("<img src='/media/check-mark.png'/>").addClass(
@@ -82,6 +95,16 @@ $(document).ready(() => {
       return tlcProgress;
     }
   }
+
+  $("body").on("click", "#add-tech", (e) => {
+    console.log("Add-Tech button clicked");
+    dashboard.toggleClass("hidden");
+    newTechForm.toggleClass("hidden");
+  });
+
+  // addTechBtn.on("click", (e) => {
+  //   console.log("Add-Tech button clicked");
+  // });
 
   // ==============
 });
