@@ -38,6 +38,7 @@ div {
 }
 
 .tech-details {
+  border: none;
   display: flex;
   flex-flow: nowrap row;
   justify-content: space-between;
