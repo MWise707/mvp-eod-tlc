@@ -1,12 +1,14 @@
 import express from "express";
 import fs from "fs";
 import pg from "pg";
+import "dotenv/config";
 
 const app = express();
 const expressPort = 8001;
 
+const connectionString = process.env.DATABASE_URL;
 const db = new pg.Pool({
-  connectionString: "postgres://localhost/eod-tlc",
+  connectionString,
 });
 
 app.use(express.json());
