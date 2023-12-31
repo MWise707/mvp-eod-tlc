@@ -14,6 +14,7 @@ $(document).ready(() => {
   const newTechSubmit = $("#submitNewTechForm");
   const deleteTechBtn = $("#deleteTechBtn");
   const selectTechForm = $("#selectTechForm").addClass("hidden");
+  const showEditOptions = $("#editTechBtn");
 
   let newTech = {
     rank: "SGT",
@@ -27,28 +28,281 @@ $(document).ready(() => {
     is_officer: false,
     badge_level: "BASIC",
   };
+  let editTechObj = {};
 
   function createTechEditForm(tech) {
+    let selectedFields = [];
     let techEditForm = $(
-      `<form id="edit-${tech.tech_id}">${tech.rank} ${tech.last_name}</form>`
-    ).appendTo(body);
+      `<form id="edit-${tech.tech_id}">Choose Fields to Change</form>`
+    )
+      .appendTo(body)
+      .addClass("hidden");
     for (const field in tech) {
-      if (tech.hasOwnProperty(field)) {
+      if (tech.hasOwnProperty(field) && field !== "tech_id") {
         let formCheckDiv = $("<div></div>")
           .addClass("form-check")
           .appendTo(techEditForm);
         let checkBoxInput = $(
           `<input type="checkbox" class="form-check-input" id="check-${field}">`
         ).appendTo(formCheckDiv);
+        checkBoxInput.on("change", function () {
+          if (this.checked) {
+            selectedFields.push(field);
+          } else {
+            selectedFields = selectedFields.filter((item) => item !== field);
+          }
+          console.log("Selected Fields:", selectedFields);
+        });
         let checkBoxLabel = $(
           `<label class="form-check-label" for="check-${field}">${field}: ${tech[field]}</label>`
         ).appendTo(formCheckDiv);
       }
     }
-    //<button type="submit" class="btn btn-primary" id="editTechBtn">Edit Tech</button>
     let editTechFieldsBtn = $(
       `<button type="submit" class="btn btn-primary" id="edit-${tech.tech_id}selection">Edit Selected Fields</button>`
     ).appendTo(techEditForm);
+    editTechFieldsBtn.on("click", (e) => {
+      e.preventDefault();
+      techEditForm.addClass("hidden");
+      let techEditor = $(
+        `<form id="edit-selections-${tech.tech_id}">${tech.rank} ${tech.last_name}</form>`
+      ).appendTo(body);
+      for (let i = 0; i < selectedFields.length; i++) {
+        let fieldName = selectedFields[i];
+        if (fieldName === "rank") {
+          let rankDiv = $('<div class="form-group"></div>').appendTo(
+            techEditor
+          );
+          let divlabel = $(
+            '<label for="changeRank">Change Rank</label>'
+          ).appendTo(rankDiv);
+          let selectRank = $(
+            '<select class="form-control" id="changeRank"></select>'
+          ).appendTo(rankDiv);
+          let pfcOpt = $("<option>E-3 / PFC</option>").appendTo(selectRank);
+          let spcOpt = $("<option>E-4 / SPC</option>").appendTo(selectRank);
+          let sgtOpt = $("<option>E-5 / SGT</option>").appendTo(selectRank);
+          let ssgOpt = $("<option>E-6 / SSG</option>").appendTo(selectRank);
+          let sfcOpt = $("<option>E-7 / SFC</option>").appendTo(selectRank);
+          let msgOpt = $("<option>E-8 / 1SG</option>").appendTo(selectRank);
+          let lt2Opt = $("<option>O-1 / 2LT</option>").appendTo(selectRank);
+          let lt1Opt = $("<option>O-2 / 1LT</option>").appendTo(selectRank);
+          let cptOpt = $("<option>O-3 / CPT</option>").appendTo(selectRank);
+        }
+        if (fieldName === "first_name") {
+          let nameDiv = $('<div class="form-group"></div>').appendTo(
+            techEditor
+          );
+          let firstNameLabel = $(
+            '<label for="changeFirstName">Change First Name</label>'
+          ).appendTo(nameDiv);
+          let firstNameInput = $(
+            `<input type="text" class="form-control" id="changeFirstName" placeholder="${tech.first_name}"/>`
+          ).appendTo(nameDiv);
+        }
+        if (fieldName === "last_name") {
+          let lastNameDiv = $('<div class="form-group"></div>').appendTo(
+            techEditor
+          );
+          let lastNameLabel = $(
+            '<label for="changeLastName">Change First Name</label>'
+          ).appendTo(lastNameDiv);
+          let lastNameInput = $(
+            `<input type="text" class="form-control" id="changeLastName" placeholder="${tech.last_name}"/>`
+          ).appendTo(lastNameDiv);
+        }
+        if (fieldName === "position") {
+          let positionDiv = $('<div class="form-group"></div>').appendTo(
+            techEditor
+          );
+          let positionLabel = $(
+            '<label for="changePosition">Change Position</label>'
+          ).appendTo(positionDiv);
+          let selectPosition = $(
+            '<select class="form-control" id="changePosition"></select>'
+          ).appendTo(positionDiv);
+          let optTL = $("<option>Team Leader</option>").appendTo(
+            selectPosition
+          );
+          let optTM = $("<option>Senior Team Member</option>").appendTo(
+            selectPosition
+          );
+          let optSenTM = $("<option>Team Member</option>").appendTo(
+            selectPosition
+          );
+          let optPL = $("<option>Platoon Leader</option>").appendTo(
+            selectPosition
+          );
+          let optPSG = $("<option>Platoon Sergeant</option>").appendTo(
+            selectPosition
+          );
+          let optOpsNCO = $("<option>Operations NCO</option>").appendTo(
+            selectPosition
+          );
+          let optCDR = $("<option>Company Commander</option>").appendTo(
+            selectPosition
+          );
+          let optMSG = $("<option>First Sergeant</option>").appendTo(
+            selectPosition
+          );
+          let optUnk = $("<option>Unassigned</option>").appendTo(
+            selectPosition
+          );
+        }
+        if (fieldName === "is_tlc_complete") {
+          let tlcDiv = $('<div class="form-group"></div>').appendTo(techEditor);
+          let tlcCheckDiv = $('<div class="form-check"></div>').appendTo(
+            tlcDiv
+          );
+          let tlcCheckbox = $(
+            `<input class="form-check-input" type="checkbox" id="tlcCheckbox"/>`
+          ).appendTo(tlcCheckDiv);
+          let tlcLabel = $(
+            `<label class="form-check-label" for="tlcCheckbox">Team Leader Certified</label>`
+          ).appendTo(tlcCheckDiv);
+        }
+        if (fieldName === "percent_complete") {
+          let percentDiv = $('<div class="form-group"></div>').appendTo(
+            techEditor
+          );
+          let percentLabel = $(
+            '<label for="changeTLCpercent">TLC % Complete</label>'
+          ).appendTo(percentDiv);
+          let percentInput = $(
+            '<input type="number" class="form-control" id="changeTLCpercent" placeholder="Format: 0.25"/>'
+          ).appendTo(percentDiv);
+        }
+        if (selectedFields[i] === "platoon_id") {
+          let platoonDiv = $('<div class="form-group"></div>').appendTo(
+            techEditor
+          );
+          let pltLabel = $(
+            '<label for="changePlatoon">Change Platoon</label>'
+          ).appendTo(platoonDiv);
+          let selectPlatoon = $(
+            '<select class="form-control" id="changePlatoon"></select>'
+          ).appendTo(platoonDiv);
+          let opt1st = $("<option>1st Platoon</option>").appendTo(
+            selectPlatoon
+          );
+          let opt2nd = $("<option>2nd Platoon</option>").appendTo(
+            selectPlatoon
+          );
+          let opt3rd = $("<option>3rd Platoon</option>").appendTo(
+            selectPlatoon
+          );
+          let optHq = $("<option>HQ Platoon</option>").appendTo(selectPlatoon);
+          let optNoPlt = $("<option>UNASSIGNED</option>").appendTo(
+            selectPlatoon
+          );
+        }
+        if (fieldName === "team_id") {
+          let teamDiv = $('<div class="form-group"></div>').appendTo(
+            techEditor
+          );
+          let teamLabel = $(
+            '<label for="changeTeam">Change Team</label>'
+          ).appendTo(teamDiv);
+          let selectTeam = $(
+            '<select class="form-control" id="changeTeam"></select>'
+          ).appendTo(teamDiv);
+          let optTM1 = $("<option>1 (1-1, 2-1, or 3-1)</option>").appendTo(
+            selectTeam
+          );
+          let optTM2 = $("<option>2 (1-2, 2-2, or 3-2)</option>").appendTo(
+            selectTeam
+          );
+          let optTM3 = $("<option>3 (1-3, 2-3, or 3-3)</option>").appendTo(
+            selectTeam
+          );
+          let optNoTM = $("<option>Not on a team</option>").appendTo(
+            selectTeam
+          );
+        }
+        if (fieldName === "badge_level") {
+          let badgeDiv = $('<div class="form-group"></div>').appendTo(
+            techEditor
+          );
+          let badgeLabel = $(
+            '<label for="changeBadge">Change Badge</label>'
+          ).appendTo(badgeDiv);
+          let selectBadge = $(
+            '<select class="form-control" id="changeBadge"></select>'
+          ).appendTo(badgeDiv);
+          let optBasic = $("<option>BASIC</option>").appendTo(selectBadge);
+          let optSenior = $("<option>SENIOR</option>").appendTo(selectBadge);
+          let optMaster = $("<option>MASTER</option>").appendTo(selectBadge);
+        }
+      }
+      let submitTechEditsBtn = $(
+        '<button type="submit" class="btn btn-primary" id="submitTechEdits">Submit Changes</button>'
+      ).appendTo(techEditor);
+      submitTechEditsBtn.on("click", (e) => {
+        for (let i = 0; i < selectedFields.length; i++) {
+          let editKey = selectedFields[i];
+
+          switch (editKey) {
+            case "rank":
+              editTechObj[editKey] = $("#changeRank option:selected")
+                .text()
+                .slice(-3);
+              editTechObj.is_officer =
+                editTechObj[editKey] === "2LT" ||
+                editTechObj[editKey] === "CPT" ||
+                editTechObj[editKey] === "1LT";
+              break;
+
+            case "first_name":
+              editTechObj[editKey] = $("#changeFirstName").val();
+              break;
+
+            case "last_name":
+              editTechObj[editKey] = $("#changeLastName").val();
+              break;
+
+            case "position":
+              editTechObj[editKey] = $(
+                "#changePosition option:selected"
+              ).text();
+              break;
+
+            case "is_tlc_complete":
+              $("#tlcCheckbox").is(":checked")
+                ? (editTechObj[editKey] = true)
+                : (editTechObj[editKey] = false);
+              break;
+
+            case "percent_complete":
+              editTechObj[editKey] = Number($("#changeTLCpercent").val());
+              break;
+
+            case "platoon_id":
+              editTechObj[editKey] = $("#changePlatoon option:selected").text();
+              break;
+
+            case "team_id":
+              editTechObj[editKey] = getTeamId(
+                $("#changeTeam option:selected").text()
+              );
+              break;
+
+            case "badge_level":
+              editTechObj[editKey] = $("#changeBadge option:selected").text();
+              break;
+
+            default:
+              console.log("No changes made");
+              break;
+          }
+          console.log(editTechObj);
+          editTech(tech.tech_id, editTechObj);
+        }
+      });
+    });
+  }
+
+  function resetEditTechObj() {
+    editTechObj = {};
   }
 
   function showAllTechs() {
@@ -137,6 +391,23 @@ $(document).ready(() => {
       },
       error: (error) => {
         console.error("Error deleting tech", error);
+      },
+    });
+  }
+
+  function editTech(techId, editObj) {
+    $.ajax({
+      url: `/techs/${techId}`,
+      data: JSON.stringify(editObj),
+      type: "PATCH",
+      contentType: "application/json",
+      success: () => {
+        techEditForm.addClass("hidden");
+        dashboard.removeClass("hidden");
+        console.log("Success editing tech");
+      },
+      error: (error) => {
+        console.error("Error editing tech", error);
       },
     });
   }
@@ -274,5 +545,13 @@ $(document).ready(() => {
     const techId = $("#tech-selected option:selected").attr("id");
     console.log("Selected Tech ID:", techId);
     deleteTech(techId);
+  });
+
+  // TODO finish event listener
+  showEditOptions.on("click", (e) => {
+    const techId = $("#tech-selected option:selected").attr("id");
+    e.preventDefault();
+    selectTechForm.addClass("hidden");
+    $(`#edit-${techId}`).removeClass("hidden");
   });
 });
