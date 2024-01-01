@@ -53,17 +53,17 @@ $(document).ready(() => {
   };
 
   let platoonList = {
-    "1st Platoon": 1,
-    "2nd Platoon": 2,
-    "3rd Platoon": 3,
-    "HQ Platoon": 4,
-    UNASSIGNED: 5,
+    "1st Platoon": "1",
+    "2nd Platoon": "2",
+    "3rd Platoon": "3",
+    "HQ Platoon": "4",
+    UNASSIGNED: "5",
   };
 
   let teamList = {
-    "1 (1-1, 2-1, or 3-1)": 1,
-    "2 (1-2, 2-2, or 3-2)": 2,
-    "3 (1-3, 2-3, or 3-3)": 3,
+    "1 (1-1, 2-1, or 3-1)": "1",
+    "2 (1-2, 2-2, or 3-2)": "2",
+    "3 (1-3, 2-3, or 3-3)": "3",
     "Not on a team": null,
   };
 
@@ -279,8 +279,8 @@ $(document).ready(() => {
         .addClass("platoon-title")
         .appendTo(`#platoon-${platoon_id}`);
       for (let i = 0; i < data.length; i++) {
-        let badgeLink = getBadgePic(data[i].badge_level);
-        let shortTitle = getPostionTitle(data[i].position);
+        let badgeLink = badgeList[data[i].badge_level];
+        let shortTitle = positionList[data[i].position];
         let techDetails = $("<div></div>")
           .addClass("tech-details")
           .appendTo(`#platoon-${platoon_id}`);
@@ -394,50 +394,23 @@ $(document).ready(() => {
   };
 
   function getPlatoonTitle(platoon_id) {
-    // TODO
-    if (platoon_id === "1") return "1st Platoon";
-    if (platoon_id === "2") return "2nd Platoon";
-    if (platoon_id === "3") return "3rd Platoon";
-    if (platoon_id === "4") return "HQ Platoon";
-    if (platoon_id === null || platoon_id === "5") return "UNASSIGNED";
+    for (const [key, value] of Object.entries(platoonList)) {
+      if (value === platoon_id) {
+        return key;
+      }
+    }
   }
 
   function getPlatoonId(pltTitle) {
     return platoonList[pltTitle];
-    // if (pltTitle === "1st Platoon") return 1;
-    // if (pltTitle === "2nd Platoon") return 2;
-    // if (pltTitle === "3rd Platoon") return 3;
-    // if (pltTitle === "HQ Platoon") return 4;
-    // if (pltTitle === "UNASSIGNED") return 5;
   }
 
   function getTeamId(teamSelected) {
-    if (teamSelected === "1 (1-1, 2-1, or 3-1)") return 1;
-    if (teamSelected === "2 (1-2, 2-2, or 3-2)") return 2;
-    if (teamSelected === "3 (1-3, 2-3, or 3-3)") return 3;
-    if (teamSelected === "Not on a team") return null;
+    return teamList[teamSelected];
   }
 
   function getRank(rankSelected) {
     return rankSelected.slice(-3);
-  }
-
-  function getPostionTitle(position) {
-    if (position === "Team Leader") return "TL";
-    if (position === "Senior Team Member") return "TM";
-    if (position === "Team Member") return "TM";
-    if (position === "Platoon Leader") return "PL";
-    if (position === "Platoon Sergeant") return "PSG";
-    if (position === "Operations NCO") return "OPS NCO";
-    if (position === "Company Commander") return "CDR";
-    if (position === "First Sergeant") return "1SG";
-    if (position === "Unassigned") return "Unassigned";
-  }
-
-  function getBadgePic(badge_level) {
-    if (badge_level === "MASTER") return "/media/master-eod.png";
-    if (badge_level === "SENIOR") return "/media/senior-eod.png";
-    if (badge_level === "BASIC") return "/media/basic-eod.png";
   }
 
   function showTLC(tech) {
