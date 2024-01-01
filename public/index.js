@@ -29,6 +29,49 @@ $(document).ready(() => {
     badge_level: "BASIC",
   };
   let editTechObj = {};
+  let positionList = {
+    "Team Leader": "TL",
+    "Senior Team Member": "TM",
+    "Team Member": "TM",
+    "Platoon Leader": "PL",
+    "Platoon Sergeant": "PSG",
+    "Operations NCO": "Ops NCO",
+    "Company Commander": "CDR",
+    "First Sergeant": "1SG",
+    Unassigned: "Unassigned",
+  };
+  let rankList = {
+    "E-3 / PFC": "PFC",
+    "E-4 / SPC": "SPC",
+    "E-5 / SGT": "SGT",
+    "E-6 / SSG": "SSG",
+    "E-7 / SFC": "SFC",
+    "E-8 / 1SG": "1SG",
+    "O-1 / 2LT": "2LT",
+    "O-2 / 1LT": "1LT",
+    "O-3 / CPT": "CPT",
+  };
+
+  let platoonList = {
+    "1st Platoon": 1,
+    "2nd Platoon": 2,
+    "3rd Platoon": 3,
+    "HQ Platoon": 4,
+    UNASSIGNED: 5,
+  };
+
+  let teamList = {
+    "1 (1-1, 2-1, or 3-1)": 1,
+    "2 (1-2, 2-2, or 3-2)": 2,
+    "3 (1-3, 2-3, or 3-3)": 3,
+    "Not on a team": null,
+  };
+
+  let badgeList = {
+    BASIC: "/media/basic-eod.png",
+    SENIOR: "/media/senior-eod.png",
+    MASTER: "/media/master-eod.png",
+  };
 
   function createTechEditForm(tech) {
     let selectedFields = [];
@@ -38,7 +81,11 @@ $(document).ready(() => {
       .appendTo(body)
       .addClass("hidden");
     for (const field in tech) {
-      if (tech.hasOwnProperty(field) && field !== "tech_id") {
+      if (
+        tech.hasOwnProperty(field) &&
+        field !== "tech_id" &&
+        field !== "is_officer"
+      ) {
         let formCheckDiv = $("<div></div>")
           .addClass("form-check")
           .appendTo(techEditForm);
@@ -70,83 +117,25 @@ $(document).ready(() => {
       for (let i = 0; i < selectedFields.length; i++) {
         let fieldName = selectedFields[i];
         if (fieldName === "rank") {
-          let rankDiv = $('<div class="form-group"></div>').appendTo(
-            techEditor
+          createDynamicFormElement(
+            fieldName,
+            "optionDropdown",
+            techEditor,
+            rankList
           );
-          let divlabel = $(
-            '<label for="changeRank">Change Rank</label>'
-          ).appendTo(rankDiv);
-          let selectRank = $(
-            '<select class="form-control" id="changeRank"></select>'
-          ).appendTo(rankDiv);
-          let pfcOpt = $("<option>E-3 / PFC</option>").appendTo(selectRank);
-          let spcOpt = $("<option>E-4 / SPC</option>").appendTo(selectRank);
-          let sgtOpt = $("<option>E-5 / SGT</option>").appendTo(selectRank);
-          let ssgOpt = $("<option>E-6 / SSG</option>").appendTo(selectRank);
-          let sfcOpt = $("<option>E-7 / SFC</option>").appendTo(selectRank);
-          let msgOpt = $("<option>E-8 / 1SG</option>").appendTo(selectRank);
-          let lt2Opt = $("<option>O-1 / 2LT</option>").appendTo(selectRank);
-          let lt1Opt = $("<option>O-2 / 1LT</option>").appendTo(selectRank);
-          let cptOpt = $("<option>O-3 / CPT</option>").appendTo(selectRank);
         }
         if (fieldName === "first_name") {
-          let nameDiv = $('<div class="form-group"></div>').appendTo(
-            techEditor
-          );
-          let firstNameLabel = $(
-            '<label for="changeFirstName">Change First Name</label>'
-          ).appendTo(nameDiv);
-          let firstNameInput = $(
-            `<input type="text" class="form-control" id="changeFirstName" placeholder="${tech.first_name}"/>`
-          ).appendTo(nameDiv);
+          createDynamicFormElement(fieldName, "textInput", techEditor);
         }
         if (fieldName === "last_name") {
-          let lastNameDiv = $('<div class="form-group"></div>').appendTo(
-            techEditor
-          );
-          let lastNameLabel = $(
-            '<label for="changeLastName">Change First Name</label>'
-          ).appendTo(lastNameDiv);
-          let lastNameInput = $(
-            `<input type="text" class="form-control" id="changeLastName" placeholder="${tech.last_name}"/>`
-          ).appendTo(lastNameDiv);
+          createDynamicFormElement(fieldName, "textInput", techEditor);
         }
         if (fieldName === "position") {
-          let positionDiv = $('<div class="form-group"></div>').appendTo(
-            techEditor
-          );
-          let positionLabel = $(
-            '<label for="changePosition">Change Position</label>'
-          ).appendTo(positionDiv);
-          let selectPosition = $(
-            '<select class="form-control" id="changePosition"></select>'
-          ).appendTo(positionDiv);
-          let optTL = $("<option>Team Leader</option>").appendTo(
-            selectPosition
-          );
-          let optTM = $("<option>Senior Team Member</option>").appendTo(
-            selectPosition
-          );
-          let optSenTM = $("<option>Team Member</option>").appendTo(
-            selectPosition
-          );
-          let optPL = $("<option>Platoon Leader</option>").appendTo(
-            selectPosition
-          );
-          let optPSG = $("<option>Platoon Sergeant</option>").appendTo(
-            selectPosition
-          );
-          let optOpsNCO = $("<option>Operations NCO</option>").appendTo(
-            selectPosition
-          );
-          let optCDR = $("<option>Company Commander</option>").appendTo(
-            selectPosition
-          );
-          let optMSG = $("<option>First Sergeant</option>").appendTo(
-            selectPosition
-          );
-          let optUnk = $("<option>Unassigned</option>").appendTo(
-            selectPosition
+          createDynamicFormElement(
+            fieldName,
+            "optionDropdown",
+            techEditor,
+            positionList
           );
         }
         if (fieldName === "is_tlc_complete") {
@@ -172,66 +161,29 @@ $(document).ready(() => {
             '<input type="number" class="form-control" id="changeTLCpercent" placeholder="Format: 0.25"/>'
           ).appendTo(percentDiv);
         }
-        if (selectedFields[i] === "platoon_id") {
-          let platoonDiv = $('<div class="form-group"></div>').appendTo(
-            techEditor
-          );
-          let pltLabel = $(
-            '<label for="changePlatoon">Change Platoon</label>'
-          ).appendTo(platoonDiv);
-          let selectPlatoon = $(
-            '<select class="form-control" id="changePlatoon"></select>'
-          ).appendTo(platoonDiv);
-          let opt1st = $("<option>1st Platoon</option>").appendTo(
-            selectPlatoon
-          );
-          let opt2nd = $("<option>2nd Platoon</option>").appendTo(
-            selectPlatoon
-          );
-          let opt3rd = $("<option>3rd Platoon</option>").appendTo(
-            selectPlatoon
-          );
-          let optHq = $("<option>HQ Platoon</option>").appendTo(selectPlatoon);
-          let optNoPlt = $("<option>UNASSIGNED</option>").appendTo(
-            selectPlatoon
+        if (fieldName === "platoon_id") {
+          createDynamicFormElement(
+            fieldName,
+            "optionDropdown",
+            techEditor,
+            platoonList
           );
         }
         if (fieldName === "team_id") {
-          let teamDiv = $('<div class="form-group"></div>').appendTo(
-            techEditor
-          );
-          let teamLabel = $(
-            '<label for="changeTeam">Change Team</label>'
-          ).appendTo(teamDiv);
-          let selectTeam = $(
-            '<select class="form-control" id="changeTeam"></select>'
-          ).appendTo(teamDiv);
-          let optTM1 = $("<option>1 (1-1, 2-1, or 3-1)</option>").appendTo(
-            selectTeam
-          );
-          let optTM2 = $("<option>2 (1-2, 2-2, or 3-2)</option>").appendTo(
-            selectTeam
-          );
-          let optTM3 = $("<option>3 (1-3, 2-3, or 3-3)</option>").appendTo(
-            selectTeam
-          );
-          let optNoTM = $("<option>Not on a team</option>").appendTo(
-            selectTeam
+          createDynamicFormElement(
+            fieldName,
+            "optionDropdown",
+            techEditor,
+            teamList
           );
         }
         if (fieldName === "badge_level") {
-          let badgeDiv = $('<div class="form-group"></div>').appendTo(
-            techEditor
+          createDynamicFormElement(
+            fieldName,
+            "optionDropdown",
+            techEditor,
+            badgeList
           );
-          let badgeLabel = $(
-            '<label for="changeBadge">Change Badge</label>'
-          ).appendTo(badgeDiv);
-          let selectBadge = $(
-            '<select class="form-control" id="changeBadge"></select>'
-          ).appendTo(badgeDiv);
-          let optBasic = $("<option>BASIC</option>").appendTo(selectBadge);
-          let optSenior = $("<option>SENIOR</option>").appendTo(selectBadge);
-          let optMaster = $("<option>MASTER</option>").appendTo(selectBadge);
         }
       }
       let submitTechEditsBtn = $(
@@ -412,7 +364,37 @@ $(document).ready(() => {
     });
   }
 
+  // ========== HELPER FUNCTIONS ===============
+  createDynamicFormElement = function (
+    field,
+    fieldType,
+    parentForm,
+    referenceObj
+  ) {
+    let dynamicDiv = $('<div class="form-group"></div>')
+      .appendTo(parentForm)
+      .append($(`<label for="change-${field}">Change ${field}</label>`));
+
+    if (fieldType === "textInput") {
+      dynamicDiv.append(
+        $(
+          `<input type="text" class="form-control" id="change-${field}" placeholder="Enter ${field} here"/>`
+        )
+      );
+    } else if (fieldType === "optionDropdown") {
+      let selectDiv = $(
+        `<select class="form-control" id="change-${field}"/>`
+      ).appendTo(dynamicDiv);
+      console.log(referenceObj);
+      for (const dynamicOpt in referenceObj) {
+        let option = $(`<option>${dynamicOpt}</option>`).appendTo(selectDiv);
+        console.log("Created dynamic dropdown option", dynamicOpt);
+      }
+    }
+  };
+
   function getPlatoonTitle(platoon_id) {
+    // TODO
     if (platoon_id === "1") return "1st Platoon";
     if (platoon_id === "2") return "2nd Platoon";
     if (platoon_id === "3") return "3rd Platoon";
@@ -421,11 +403,12 @@ $(document).ready(() => {
   }
 
   function getPlatoonId(pltTitle) {
-    if (pltTitle === "1st Platoon") return 1;
-    if (pltTitle === "2nd Platoon") return 2;
-    if (pltTitle === "3rd Platoon") return 3;
-    if (pltTitle === "HQ Platoon") return 4;
-    if (pltTitle === "UNASSIGNED") return 5;
+    return platoonList[pltTitle];
+    // if (pltTitle === "1st Platoon") return 1;
+    // if (pltTitle === "2nd Platoon") return 2;
+    // if (pltTitle === "3rd Platoon") return 3;
+    // if (pltTitle === "HQ Platoon") return 4;
+    // if (pltTitle === "UNASSIGNED") return 5;
   }
 
   function getTeamId(teamSelected) {
