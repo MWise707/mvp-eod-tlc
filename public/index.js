@@ -15,6 +15,12 @@ $(document).ready(() => {
   const deleteTechBtn = $("#deleteTechBtn");
   const selectTechForm = $("#selectTechForm").addClass("hidden");
   const showEditOptions = $("#editTechBtn");
+  const viewAllPlatoons = $("#view-all-platoons");
+  const view1stPlatoon = $("#view-1st-Plt");
+  const view2ndPlatoon = $("#view-2nd-Plt");
+  const view3rdPlatoon = $("#view-3rd-Plt");
+  const viewHqPlatoon = $("#view-HQ-Plt");
+  const viewUnassigned = $("#view-unassigned");
 
   let newTech = {
     rank: "SGT",
@@ -190,12 +196,13 @@ $(document).ready(() => {
         '<button type="submit" class="btn btn-primary" id="submitTechEdits">Submit Changes</button>'
       ).appendTo(techEditor);
       submitTechEditsBtn.on("click", (e) => {
+        console.log("Submit Tech Edits button clicked");
         for (let i = 0; i < selectedFields.length; i++) {
           let editKey = selectedFields[i];
 
           switch (editKey) {
             case "rank":
-              editTechObj[editKey] = $("#changeRank option:selected")
+              editTechObj[editKey] = $("#change-rank option:selected")
                 .text()
                 .slice(-3);
               editTechObj.is_officer =
@@ -205,16 +212,17 @@ $(document).ready(() => {
               break;
 
             case "first_name":
-              editTechObj[editKey] = $("#changeFirstName").val();
+              console.log($("#changeFirstName").val());
+              editTechObj[editKey] = $("#change-first_name").val();
               break;
 
             case "last_name":
-              editTechObj[editKey] = $("#changeLastName").val();
+              editTechObj[editKey] = $("#change-last_name").val();
               break;
 
             case "position":
               editTechObj[editKey] = $(
-                "#changePosition option:selected"
+                "#change-position option:selected"
               ).text();
               break;
 
@@ -229,17 +237,21 @@ $(document).ready(() => {
               break;
 
             case "platoon_id":
-              editTechObj[editKey] = $("#changePlatoon option:selected").text();
+              editTechObj[editKey] = getPlatoonId(
+                $("#change-platoon_id option:selected").text()
+              );
               break;
 
             case "team_id":
               editTechObj[editKey] = getTeamId(
-                $("#changeTeam option:selected").text()
+                $("#change-team_id option:selected").text()
               );
               break;
 
             case "badge_level":
-              editTechObj[editKey] = $("#changeBadge option:selected").text();
+              editTechObj[editKey] = $(
+                "#change-badge_level option:selected"
+              ).text();
               break;
 
             default:
@@ -247,7 +259,13 @@ $(document).ready(() => {
               break;
           }
           console.log(editTechObj);
-          editTech(tech.tech_id, editTechObj);
+          editTech(tech.tech_id, editTechObj)
+            .then(() => {
+              showAllPlatoons();
+            })
+            .catch((error) => {
+              console.error("Error running eidtTech function:", error);
+            });
         }
       });
     });
@@ -269,9 +287,10 @@ $(document).ready(() => {
     });
   }
 
-  function showPlatoon(platoon_id) {
+  // Get Platoon Info populates the platoon div
+  function getPlatoonInfo(platoon_id) {
     let platoonCont = $(`<div id="platoon-${platoon_id}"></div>`)
-      .addClass("all-platoons")
+      .addClass("all-platoons hidden")
       .appendTo(platoons);
     $.get(`/techs/${platoon_id}`, (data) => {
       const pltLabel = getPlatoonTitle(platoon_id);
@@ -310,21 +329,30 @@ $(document).ready(() => {
     });
   }
 
-  showPlatoon("1");
-  showPlatoon("2");
-  showPlatoon("3");
-  showPlatoon("4");
-  showPlatoon("5");
+  const showAllPlatoons = function () {
+    emptyContainer(platoons);
+    getPlatoonInfo("1");
+    getPlatoonInfo("2");
+    getPlatoonInfo("3");
+    getPlatoonInfo("4");
+    getPlatoonInfo("5");
+  };
 
+  showAllPlatoons();
+
+  // API Calls to server
   function addTech(techObj) {
     $.post({
       url: "/techs",
       contentType: "application/json",
       data: JSON.stringify(techObj),
       success: function (data) {
-        showPlatoon(newTech.platoon_id);
+        emptyContainer($(`#platoon-${newTech.platoon_id}`));
+        getPlatoonInfo(newTech.platoon_id);
+        $(".all-platoons").toggle();
         dashboard.removeClass("hidden");
-        $(`#platoon-${newTech.platoon_id}`).removeClass("hidden");
+        $(`#platoon-${newTech.platoon_id}`).toggle();
+        console.log("Success adding tech");
       },
       error: function (error) {
         console.error("Error adding tech:", error);
@@ -332,14 +360,17 @@ $(document).ready(() => {
     });
   }
 
-  function deleteTech(techId) {
+  function deleteTech(techId, platoonId) {
     $.ajax({
       url: `/techs/${techId}`,
       type: "DELETE",
       success: () => {
-        selectTechForm.addClass("hidden");
+        emptyContainer($(`#platoon-${platoonId}`));
+        getPlatoonInfo(platoonId);
+        $(".all-platoons").toggle();
         dashboard.removeClass("hidden");
-        console.log("Succss deleting tech");
+        $(`#platoon-${platoonId}`).toggle();
+        console.log("Success deleting tech");
       },
       error: (error) => {
         console.error("Error deleting tech", error);
@@ -348,19 +379,23 @@ $(document).ready(() => {
   }
 
   function editTech(techId, editObj) {
-    $.ajax({
-      url: `/techs/${techId}`,
-      data: JSON.stringify(editObj),
-      type: "PATCH",
-      contentType: "application/json",
-      success: () => {
-        techEditForm.addClass("hidden");
-        dashboard.removeClass("hidden");
-        console.log("Success editing tech");
-      },
-      error: (error) => {
-        console.error("Error editing tech", error);
-      },
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `/techs/${techId}`,
+        data: JSON.stringify(editObj),
+        type: "PATCH",
+        contentType: "application/json",
+        success: () => {
+          techEditForm.addClass("hidden");
+          dashboard.removeClass("hidden");
+          console.log("Success editing tech");
+          resolve();
+        },
+        error: (error) => {
+          console.error("Error editing tech", error);
+          reject(error);
+        },
+      });
     });
   }
 
@@ -413,6 +448,17 @@ $(document).ready(() => {
     return rankSelected.slice(-3);
   }
 
+  function isVisible(element) {
+    return !element.hasClass("hidden");
+  }
+
+  function emptyContainer(container) {
+    if (container) {
+      container.empty();
+    }
+  }
+
+  // Displays check mark or tlc percentage
   function showTLC(tech) {
     if (tech.is_tlc_complete) {
       let checkMark = $("<img src='/media/check-mark.png'/>").addClass(
@@ -448,14 +494,15 @@ $(document).ready(() => {
     newTech.badge_level = $("#badge-selected option:selected").text();
   }
 
+  // This allows for user to see all techs in dropdown menu
   function populateTechSelection() {
     showAllTechs()
       .then((data) => {
         for (let i = 0; i < data.length; i++) {
           let techOption = $(
-            `<option id="${data[i].tech_id}">${data[i].rank} ${
-              data[i].first_name
-            } ${data[i].last_name}: ${getPlatoonTitle(
+            `<option id="${data[i].tech_id}:${data[i].platoon_id}">${
+              data[i].rank
+            } ${data[i].first_name} ${data[i].last_name}: ${getPlatoonTitle(
               String(data[i].platoon_id)
             )}</option>`
           ).appendTo("#tech-selected");
@@ -467,24 +514,17 @@ $(document).ready(() => {
   }
   populateTechSelection();
 
+  // =========== EVENT LISTENERS ================
+
   addTechBtn.on("click", () => {
-    // $("#platoon-1").addClass("hidden");
-    // $("#platoon-2").addClass("hidden");
-    // $("#platoon-3").addClass("hidden");
-    // $("#platoon-4").addClass("hidden");
-    // $("#platoon-5").addClass("hidden");
     dashboard.addClass("hidden");
     newTechForm.removeClass("hidden");
   });
 
+  // This is the Remove/Edit Tech button
   removeTechBtn.on("click", () => {
     console.log("Delete tech btn clicked");
-    // $("#platoon-1").addClass("hidden");
-    // $("#platoon-2").addClass("hidden");
-    // $("#platoon-3").addClass("hidden");
-    // $("#platoon-4").addClass("hidden");
-    // $("#platoon-5").addClass("hidden");
-    dashboard.addClass("hidden");
+    dashboard.add(newTechForm).addClass("hidden");
     selectTechForm.removeClass("hidden");
   });
 
@@ -497,17 +537,69 @@ $(document).ready(() => {
   });
 
   deleteTechBtn.on("click", (e) => {
-    // e.preventDefault();
-    const techId = $("#tech-selected option:selected").attr("id");
+    e.preventDefault();
+    const selectedOption = $("#tech-selected option:selected");
+    const techId = selectedOption.attr("id").split(":")[0];
+    const platoonId = selectedOption.attr("id").split(":")[1];
     console.log("Selected Tech ID:", techId);
-    deleteTech(techId);
+    deleteTech(techId, platoonId);
+    selectTechForm.addClass("hidden");
   });
 
-  // TODO finish event listener
   showEditOptions.on("click", (e) => {
-    const techId = $("#tech-selected option:selected").attr("id");
     e.preventDefault();
+    console.log("Show edit options clicked");
+    const selectedOption = $("#tech-selected option:selected");
+    const techId = selectedOption.attr("id").split(":")[0];
     selectTechForm.addClass("hidden");
     $(`#edit-${techId}`).removeClass("hidden");
+  });
+
+  // TODO finish logic for viewing all platoons
+  viewAllPlatoons.on("click", () => {
+    console.log("View All Platoons clicked");
+    showAllPlatoons();
+    dashboard.removeClass("hidden");
+    newTechForm.add(selectTechForm).addClass("hidden");
+  });
+
+  view1stPlatoon.on("click", () => {
+    console.log("View1stPlatoon button clicked");
+    emptyContainer(platoons);
+    getPlatoonInfo("1");
+    dashboard.removeClass("hidden");
+    newTechForm.add(selectTechForm).addClass("hidden");
+  });
+
+  view2ndPlatoon.on("click", () => {
+    console.log("View2ndPlatoon button clicked");
+    emptyContainer(platoons);
+    getPlatoonInfo("2");
+    dashboard.removeClass("hidden");
+    newTechForm.add(selectTechForm).addClass("hidden");
+  });
+
+  view3rdPlatoon.on("click", () => {
+    console.log("View3rdPlatoon button clicked");
+    emptyContainer(platoons);
+    getPlatoonInfo("3");
+    dashboard.removeClass("hidden");
+    newTechForm.add(selectTechForm).addClass("hidden");
+  });
+
+  viewHqPlatoon.on("click", () => {
+    console.log("ViewHQPlatoon button clicked");
+    emptyContainer(platoons);
+    getPlatoonInfo("4");
+    dashboard.removeClass("hidden");
+    newTechForm.add(selectTechForm).addClass("hidden");
+  });
+
+  viewUnassigned.on("click", () => {
+    console.log("ViewUnassignedPlatoon button clicked");
+    emptyContainer(platoons);
+    getPlatoonInfo("5");
+    dashboard.removeClass("hidden");
+    newTechForm.add(selectTechForm).addClass("hidden");
   });
 });

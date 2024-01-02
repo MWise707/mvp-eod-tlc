@@ -10,11 +10,11 @@ body {
   display: none;
 }
 
-div {
+/* div {
   border: solid;
   border-width: 1px;
   border-radius: 25px;
-}
+} */
 
 #platoons {
   display: flex;
@@ -24,6 +24,9 @@ div {
 }
 
 .all-platoons {
+  border: solid;
+  border-width: 1px;
+  border-radius: 25px;
   display: flex;
   flex-direction: column;
   margin: 2em;
@@ -57,6 +60,9 @@ div {
 }
 
 .tech-container {
+  border: solid;
+  border-width: 1px;
+  border-radius: 25px;
   display: flex;
   flex-flow: nowrap row;
   justify-content: space-between;

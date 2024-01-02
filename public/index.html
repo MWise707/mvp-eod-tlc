@@ -41,23 +41,52 @@
     <script src="index.js"></script>
   </head>
   <body>
-    <div class="dropdown">
-      <button
-        class="btn btn-secondary dropdown-toggle"
-        type="button"
-        id="dropdownMenuButton"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        MENU
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li class="dropdown-item active" id="add-tech">Add Tech</li>
-        <li class="dropdown-item active" id="delete-tech">
-          Remove / Edit Tech
-        </li>
-      </ul>
+    <div
+      class="btn-group"
+      role="group"
+      aria-label="Button group with nested dropdown"
+    >
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          MANAGE TECHS
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li class="dropdown-item active" id="add-tech">Add Tech</li>
+          <li class="dropdown-item active" id="delete-tech">
+            Remove / Edit Tech
+          </li>
+        </ul>
+      </div>
+
+      <div class="btn-group" role="group">
+        <button
+          id="btnGroupDrop1"
+          type="button"
+          class="btn btn-secondary dropdown-toggle"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          SELECT VIEW
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+          <li class="dropdown-item active" id="view-all-platoons">
+            ALL PLATOONS
+          </li>
+          <li class="dropdown-item active" id="view-1st-Plt">1st Platoon</li>
+          <li class="dropdown-item active" id="view-2nd-Plt">2nd Platoon</li>
+          <li class="dropdown-item active" id="view-3rd-Plt">3rd Platoon</li>
+          <li class="dropdown-item active" id="view-HQ-Plt">HQ Platoon</li>
+          <li class="dropdown-item active" id="view-unassigned">Unassigned</li>
+        </div>
+      </div>
     </div>
     <h1>707TH EOD TLC Dashboard</h1>
     <div id="dashboard">
