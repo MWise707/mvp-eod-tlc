@@ -82,7 +82,7 @@ $(document).ready(() => {
   function createTechEditForm(tech) {
     let selectedFields = [];
     let techEditForm = $(
-      `<form id="edit-${tech.tech_id}">Choose Fields to Change</form>`
+      `<form id="edit-${tech.tech_id}" class="custom-edit-form">Choose Fields to Change</form>`
     )
       .appendTo(body)
       .addClass("hidden");
@@ -118,7 +118,7 @@ $(document).ready(() => {
       e.preventDefault();
       techEditForm.addClass("hidden");
       let techEditor = $(
-        `<form id="edit-selections-${tech.tech_id}">${tech.rank} ${tech.last_name}</form>`
+        `<form id="edit-selections-${tech.tech_id}" class="custom-edit-form">${tech.rank} ${tech.last_name}</form>`
       ).appendTo(body);
       for (let i = 0; i < selectedFields.length; i++) {
         let fieldName = selectedFields[i];
@@ -560,7 +560,7 @@ $(document).ready(() => {
     console.log("View All Platoons clicked");
     showAllPlatoons();
     dashboard.removeClass("hidden");
-    newTechForm.add(selectTechForm).addClass("hidden");
+    $("form").addClass("hidden");
   });
 
   view1stPlatoon.on("click", () => {
@@ -568,7 +568,7 @@ $(document).ready(() => {
     emptyContainer(platoons);
     getPlatoonInfo("1");
     dashboard.removeClass("hidden");
-    newTechForm.add(selectTechForm).addClass("hidden");
+    $("form").addClass("hidden");
   });
 
   view2ndPlatoon.on("click", () => {
@@ -576,7 +576,7 @@ $(document).ready(() => {
     emptyContainer(platoons);
     getPlatoonInfo("2");
     dashboard.removeClass("hidden");
-    newTechForm.add(selectTechForm).addClass("hidden");
+    $("form").addClass("hidden");
   });
 
   view3rdPlatoon.on("click", () => {
@@ -584,7 +584,7 @@ $(document).ready(() => {
     emptyContainer(platoons);
     getPlatoonInfo("3");
     dashboard.removeClass("hidden");
-    newTechForm.add(selectTechForm).addClass("hidden");
+    $("form").addClass("hidden");
   });
 
   viewHqPlatoon.on("click", () => {
@@ -592,7 +592,7 @@ $(document).ready(() => {
     emptyContainer(platoons);
     getPlatoonInfo("4");
     dashboard.removeClass("hidden");
-    newTechForm.add(selectTechForm).addClass("hidden");
+    $("form").addClass("hidden");
   });
 
   viewUnassigned.on("click", () => {
@@ -600,6 +600,6 @@ $(document).ready(() => {
     emptyContainer(platoons);
     getPlatoonInfo("5");
     dashboard.removeClass("hidden");
-    newTechForm.add(selectTechForm).addClass("hidden");
+    $("form").addClass("hidden");
   });
 });
