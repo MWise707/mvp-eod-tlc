@@ -41,7 +41,8 @@
     <script src="index.js"></script>
   </head>
   <body>
-    <div
+    <header class="header">
+      <div
       class="btn-group"
       role="group"
       aria-label="Button group with nested dropdown"
@@ -88,7 +89,12 @@
         </div>
       </div>
     </div>
-    <h1>707TH EOD TLC Dashboard</h1>
+    <div class="page-title">
+      <h1 class="page-title">EOD Company TLC Dashboard</h1>
+    </div>
+
+    </header>
+
     <div id="dashboard">
       <div id="platoons"></div>
     </div>
@@ -200,5 +206,40 @@
         Edit Tech
       </button>
     </form>
+    <!-- footer below -->
+    <!-- Remove the container if you want to extend the Footer to full width. -->
+
+    <footer class="text-center text-white" style="background-color: #caced1">
+      <!-- Grid container -->
+      <div class="container p-4">
+        <!-- Section: Images -->
+        <section class="">
+            <div class="col-lg-2 col-md-12 mb-4 mb-md-0">
+              <div
+                class="bg-image hover-overlay ripple shadow-1-strong rounded"
+                data-ripple-color="light"
+              >
+                <img
+                  src="/media/eod-memorial.jpeg"
+                  class="w-100"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Section: Images -->
+      </div>
+      <!-- Grid container -->
+
+      <!-- Link to EOD Memorial -->
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+        💥 Initial Success or Total Failure 💥
+        <a class="text-white" href="https://memorial.eodwarriorfoundation.org/"
+          >Memorial.EODwarriorFoundation.org</a
+        >
+      </div>
+      <!-- Copyright -->
+    </footer>
+    <!-- End of .container -->
   </body>
 </html>

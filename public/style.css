@@ -6,15 +6,23 @@ body {
   background-color: peru;
 }
 
+.header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #caced1;
+}
+
+.page-title {
+  display: flex;
+  font-size: 22px;
+  align-items: center;
+}
+
 .hidden {
   display: none;
 }
-
-/* div {
-  border: solid;
-  border-width: 1px;
-  border-radius: 25px;
-} */
 
 #platoons {
   display: flex;
