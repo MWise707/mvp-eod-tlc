@@ -25,6 +25,23 @@ app.get("/techs", (req, res, next) => {
     });
 });
 
+// Route for getting techs by Team
+app.get("/techs/:id/:team", (req, res, next) => {
+  const { id } = req.params;
+  const { team } = req.params;
+  db.query("SELECT * FROM techs WHERE platoon_id = $1 AND team_id = $2", [
+    id,
+    team,
+  ])
+    .then((results) => {
+      res.send(results.rows);
+    })
+    .catch((err) => {
+      console.error("Error in getting techs platoon: ", err);
+      next(err);
+    });
+});
+
 app.get("/techs/:id", (req, res, next) => {
   const { id } = req.params;
   db.query("SELECT * FROM techs WHERE platoon_id = $1", [id])

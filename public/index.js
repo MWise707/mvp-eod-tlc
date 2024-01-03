@@ -79,6 +79,13 @@ $(document).ready(() => {
     MASTER: "/media/master-eod.png",
   };
 
+  let teamPrecedent = [
+    "Team Leader",
+    "Senior Team Member",
+    "Team Member",
+    "Unassigned",
+  ];
+
   function createTechEditForm(tech) {
     let selectedFields = [];
     let techEditForm = $(
@@ -285,6 +292,37 @@ $(document).ready(() => {
         reject(error);
       });
     });
+  }
+
+  // TODO This function is for future refactoring to give more flexibility and modularity to code in project and to provide function to build TEAMs instead of platoons- TODO need to fix before using
+  function addTechToContainer(tech, parentCont) {
+    let badgeLink = badgeList[tech.badge_level];
+    let shortTitle = positionList[tech.position];
+    let techDetails = $("<div></div>")
+      .addClass("tech-details")
+      .appendTo(`${parentCont}`);
+    if (tech.platoon_id === 4 || tech.platoon_id === 5) {
+      let techTitle = $(`<h2>${shortTitle}:</h2>`).appendTo(techDetails);
+    } else {
+      techTitle = $(
+        `<h2>${tech.platoon_id}-${tech.team_id} ${shortTitle}:</h2>`
+      ).appendTo(techDetails);
+    }
+    let tlcContainer = $("<div></div>")
+      .addClass("tlc-container")
+      .appendTo(techDetails);
+    showTLC(tech).appendTo(tlcContainer);
+    let techContainer = $("<div></div>")
+      .addClass("tech-container")
+      .appendTo(parentCont);
+    let rankName = $(`<h2>${tech.rank} ${tech.last_name}</h2>`).appendTo(
+      techContainer
+    );
+    let badgeCont = $("<div></div>")
+      .addClass("badge-container")
+      .appendTo(techContainer);
+    let badgeImg = $(`<img src="${badgeLink}"/>`).appendTo(badgeCont);
+    createTechEditForm(tech);
   }
 
   // Get Platoon Info populates the platoon div
